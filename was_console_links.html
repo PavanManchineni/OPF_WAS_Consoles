@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WAS Console Links Directory</title>
+  <style>
+    body { font-family: Segoe UI, Roboto, Arial, sans-serif; margin: 20px; color: #1a1a1a; }
+    h1 { margin-bottom: 6px; }
+    .subtitle { color: #666; margin-bottom: 18px; }
+    .filters { display: grid; grid-template-columns: repeat(4, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .filters input, .filters select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { position: sticky; top: 0; background: #f7f7f7; text-align: left; padding: 10px; border-bottom: 2px solid #ddd; cursor: pointer; }
+    tbody td { padding: 10px; border-bottom: 1px solid #eee; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; background: #eef4ff; color: #2457d1; border: 1px solid #dbe6ff; }
+    .url-cell { display: flex; align-items: center; gap: 8px; }
+    .copy-btn { padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; background: #fafafa; cursor: pointer; }
+    .copy-btn:hover { background: #f0f0f0; }
+    .count { margin: 10px 0; color: #555; }
+    .footer { margin-top: 18px; color: #777; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>OPF WAS Console Directory</h1>
+  <div class="subtitle">Quick filters, search, and copy-to-clipboard for IBM WAS consoles by Client, Product, and SDLC.</div>
+
+  <div class="filters">
+    <input id="search" type="text" placeholder="Search (client, product, SDLC, host or port)..." />
+    <select id="clientFilter"><option value="">All Clients</option></select>
+    <select id="productFilter"><option value="">All Products</option></select>
+    <select id="sdlcFilter"><option value="">All SDLC</option></select>
+  </div>
+
+  <div class="count" id="rowCount"></div>
+  <div class="footer">Tip: Click column headers to sort.</div>
+  <table id="dataTable">
+    <thead>
+      <tr>
+        <th data-key="Client">Client</th>
+        <th data-key="Product">Product</th>
+        <th data-key="SDLC">SDLC</th>
+        <th data-key="WAS Console URL">WAS Console URL</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  
+  <div class="footer">Created and Managed by Pavan Manchineni</div>
+
+  <script>
+    const rawData = [{"Client": "Ally", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55613/ibm/console"}, {"Client": "Ally", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55613/ibm/console"}, {"Client": "Ally", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55613/ibm/console"}, {"Client": "Ally", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55713/ibm/console"}, {"Client": "Ally", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55813/ibm/console"}, {"Client": "Ally", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55713/ibm/console"}, {"Client": "Ally", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55813/ibm/console"}, {"Client": "Ally", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55713/ibm/console"}, {"Client": "Ally", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55813/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfipha1dm01.prod.local:55013/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfipha1dm01.prod.local:55013/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfipha1dm01.prod.local:55013/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfipha1dm01.prod.local:55113/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfipha1dm01.prod.local:55113/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfipha1dm01.prod.local:55113/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfipha1dm01.prod.local:55213/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfipha1dm01.prod.local:55213/ibm/console"}, {"Client": "Amerant", "Product": "ASP1 ACH Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfipha1dm01.prod.local:55213/ibm/console"}, {"Client": "Amerant", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:56013/ibm/console"}, {"Client": "Amerant", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:56013/ibm/console"}, {"Client": "Amerant", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:56013/ibm/console"}, {"Client": "Amerant", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55913/ibm/console"}, {"Client": "Amerant", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55913/ibm/console"}, {"Client": "Amerant", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55913/ibm/console"}, {"Client": "Amerant", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:56113/ibm/console"}, {"Client": "Amerant", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:56113/ibm/console"}, {"Client": "Amerant", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:56113/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55313/ibm/console"}, {"Client": "Bankers Trust", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55413/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55513/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55313/ibm/console"}, {"Client": "Bankers Trust", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55413/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55513/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55313/ibm/console"}, {"Client": "Bankers Trust", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55413/ibm/console"}, {"Client": "Bankers Trust", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55513/ibm/console"}, {"Client": "Bremer", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55013/ibm/console"}, {"Client": "Bremer", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55013/ibm/console"}, {"Client": "Bremer", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55013/ibm/console"}, {"Client": "Bremer", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55113/ibm/console"}, {"Client": "Bremer", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55213/ibm/console"}, {"Client": "Bremer", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55113/ibm/console"}, {"Client": "Bremer", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55213/ibm/console"}, {"Client": "Bremer", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55113/ibm/console"}, {"Client": "Bremer", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55213/ibm/console"}, {"Client": "CIBC", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55913/ibm/console"}, {"Client": "CIBC", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:56013/ibm/console"}, {"Client": "CIBC", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:56113/ibm/console"}, {"Client": "CIBC", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55913/ibm/console"}, {"Client": "CIBC", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:56013/ibm/console"}, {"Client": "CIBC", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:56113/ibm/console"}, {"Client": "CIBC", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55913/ibm/console"}, {"Client": "CIBC", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:56013/ibm/console"}, {"Client": "CIBC", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:56113/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:56213/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:56313/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:56413/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local.prod.local:56213/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local.prod.local:56313/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local.prod.local:56413/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local.prod.local:56213/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local.prod.local:56313/ibm/console"}, {"Client": "CNBFL (City Nat Bank of Florida)", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local.prod.local:56413/ibm/console"}, {"Client": "Consolidated Gateway 2", "Product": "RTP", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfipregdm02:55113/ibm/console"}, {"Client": "Consolidated Gateway 2", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfipregdm02.prod.local:55113/ibm/console"}, {"Client": "Consolidated Gateway 2", "Product": "RTP", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfipregdm02.prod.local:55113/ibm/console"}, {"Client": "Discover", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55313/ibm/console"}, {"Client": "Discover", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55313/ibm/console"}, {"Client": "Discover", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55413/ibm/console"}, {"Client": "Discover", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55513/ibm/console"}, {"Client": "Discover", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55313/ibm/console"}, {"Client": "Discover", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55413/ibm/console"}, {"Client": "Discover", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55513/ibm/console"}, {"Client": "Discover", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55413/ibm/console"}, {"Client": "Discover", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55513/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rpymestdm01.prod.local:55013/ibm/console"}, {"Client": "Eastern Bank", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rpymestdm01.prod.local:55113/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rpymestdm01.prod.local:55213/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rpymestdm01.prod.local:55013/ibm/console"}, {"Client": "Eastern Bank", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rpymestdm01.prod.local:55113/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rpymestdm01.prod.local:55213/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rpymestdm01.prod.local:55013/ibm/console"}, {"Client": "Eastern Bank", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rpymestdm01.prod.local:55113/ibm/console"}, {"Client": "Eastern Bank", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rpymestdm01.prod.local:55213/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55113/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55213/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55113/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55213/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55113/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55213/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw1dm01.prod.local:55013/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw1dm01.prod.local:55013/ibm/console"}, {"Client": "EWB (East West Bank)", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw1dm01.prod.local:55013/ibm/console"}, {"Client": "First Citizens Bank (FCB)", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphr1dm01.prod.local:55313/ibm/console"}, {"Client": "First Citizens Bank (FCB)", "Product": "RTP", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphr1dm01.prod.local.prod.local:55313/ibm/console"}, {"Client": "M&T", "Product": "CBIS (Fednow)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphf1dm01.prod.local:55113/ibm/console"}, {"Client": "M&T", "Product": "Fednow", "SDLC": "PROD LRK", "WAS Console URL": "https://pdc1rfiphf1dm01.prod.local:55013/ibm/console"}, {"Client": "M&T", "Product": "CBIS (Fednow)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphf1dm01.prod.local:55113/ibm/console"}, {"Client": "M&T", "Product": "RTP", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfipmtbdm01.prod.local.prod.local:55013/ibm/console"}, {"Client": "M&T", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfipmtbdm01.prod.local.prod.local:55013/ibm/console"}, {"Client": "MTB LRK", "Product": "RTP", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphtldm01.prod.local:55213/ibm/console"}, {"Client": "MTB PHX", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphr1dm01.prod.local:55213/ibm/console"}, {"Client": "Pac-West", "Product": "RTP", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphr1dm01.prod.local:55213/ibm/console"}, {"Client": "Pac-West", "Product": "RTP", "SDLC": "UAT", "WAS Console URL": "https://pdc8rpymwadap01:55013/ibm/console/logon.jsp"}, {"Client": "Pac-West", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rpymwadap01:55013/ibm/console/logon.jsp"}, {"Client": "SVB XCT", "Product": "XCT", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rpymwadap01:55013/ibm/console/logon.jsp"}, {"Client": "SVB XCT", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rpymwadap02:55013/ibm/console/logon.jsp"}, {"Client": "SVB XCT", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rpymwadap02:55013/ibm/console/logon.jsp"}, {"Client": "SVB XCT (CBIS (WIRES))", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rpymwadap02:55013/ibm/console/logon.jsp"}, {"Client": "SVB XCT (CBIS (WIRES))", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55713/ibm/console"}, {"Client": "SVB XCT (CBIS (WIRES))", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55813/ibm/console"}, {"Client": "Wintrust", "Product": "CBIS (WIRES)", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55713/ibm/console"}, {"Client": "Wintrust", "Product": "Wires Reports", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55813/ibm/console"}, {"Client": "Wintrust", "Product": "Wires", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphw2dm01.prod.local:55613/ibm/console"}, {"Client": "WSFS", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local:55613/ibm/console"}, {"Client": "WSFS", "Product": "CBIS (WIRES)", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55713/ibm/console"}, {"Client": "WSFS", "Product": "Wires Reports", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55813/ibm/console"}, {"Client": "WSFS", "Product": "Wires", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphw2dm01.prod.local:55613/ibm/console"}, {"Client": "WSFS", "Product": "RTP", "SDLC": "UAT", "WAS Console URL": "https://lrk8rpymrtpws01.prod.local:55313/ibm/console"}, {"Client": "Wintrust", "Product": "Fednow", "SDLC": "UAT", "WAS Console URL": "https://PDC8RFIPHF1dm01.prod.local:55213/ibm/console"}, {"Client": "Wintrust", "Product": "Fednow", "SDLC": "PROD PHX", "WAS Console URL": "https://PDC1RFIPHF1dm01.prod.local:55213/ibm/console"}, {"Client": "Wintrust", "Product": "Fednow", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphf1dm01.prod.local:55213/ibm/console"}, {"Client": "FCB", "Product": "RTP", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphr1dm01.prod.local:55313/ibm/console"}, {"Client": "ZIONS", "Product": "RTP", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphr1dm01.prod.local:55313/ibm/console"}, {"Client": "MidFirst", "Product": "Wires", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local.prod.local:55013/ibm/console"}, {"Client": "MidFirst", "Product": "CBIS (WIRES)", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local.prod.local:55113/ibm/console"}, {"Client": "MidFirst", "Product": "Wires Reports", "SDLC": "UAT", "WAS Console URL": "https://pdc8rfiphw2dm01.prod.local.prod.local:55213/ibm/console"}, {"Client": "Comerica", "Product": "Fednow", "SDLC": "PROD PHX", "WAS Console URL": "https://pdc1rfiphf1dm01.prod.local.prod.local:55413/ibm/console"}, {"Client": "Comerica", "Product": "Fednow", "SDLC": "PROD LRK", "WAS Console URL": "https://lrk2rfiphf1dm01.prod.local.prod.local:55413/ibm/console"}];
+
+    const tableBody = document.querySelector('#dataTable tbody');
+    const rowCount = document.getElementById('rowCount');
+    const searchInput = document.getElementById('search');
+    const clientFilter = document.getElementById('clientFilter');
+    const productFilter = document.getElementById('productFilter');
+    const sdlcFilter = document.getElementById('sdlcFilter');
+
+    let sortKey = null; let sortDir = 1;
+
+    function uniq(values) { return Array.from(new Set(values)).sort((a,b)=>a.localeCompare(b)); }
+
+    function initFilters() {
+      const clients = uniq(rawData.map(r => r['Client']).filter(Boolean));
+      const products = uniq(rawData.map(r => r['Product']).filter(Boolean));
+      const sdlcs = uniq(rawData.map(r => r['SDLC']).filter(Boolean));
+
+      for (const c of clients) clientFilter.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
+      for (const p of products) productFilter.insertAdjacentHTML('beforeend', `<option value="${p}">${p}</option>`);
+      for (const s of sdlcs) sdlcFilter.insertAdjacentHTML('beforeend', `<option value="${s}">${s}</option>`);
+    }
+
+    function matchesSearch(r, q) {
+      if (!q) return true;
+      q = q.toLowerCase();
+      const url = r['WAS Console URL'] || '';
+      return (
+        (r['Client']||'').toLowerCase().includes(q) ||
+        (r['Product']||'').toLowerCase().includes(q) ||
+        (r['SDLC']||'').toLowerCase().includes(q) ||
+        url.toLowerCase().includes(q)
+      );
+    }
+
+    function applyFilters() {
+      let data = rawData.slice();
+      const q = searchInput.value.trim();
+      const c = clientFilter.value; const p = productFilter.value; const s = sdlcFilter.value;
+
+      data = data.filter(r => (!c || r['Client'] === c) && (!p || r['Product'] === p) && (!s || r['SDLC'] === s) && matchesSearch(r, q));
+
+      if (sortKey) {
+        data.sort((a,b) => {
+          const av = (a[sortKey]||'').toString().toLowerCase();
+          const bv = (b[sortKey]||'').toString().toLowerCase();
+          return av.localeCompare(bv) * sortDir;
+        });
+      }
+
+      renderRows(data);
+      rowCount.textContent = `${data.length} result${data.length === 1 ? '' : 's'}`;
+    }
+
+    function renderRows(data) {
+      tableBody.innerHTML = '';
+      for (const r of data) {
+        const url = r['WAS Console URL'];
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${r['Client']}</td>
+          <td>${r['Product']}</td>
+          <td><span class="tag">${r['SDLC']}</span></td>
+          <td class="url-cell">
+            <a href="${url}" target="_blank" rel="noopener">${url}</a>
+            <button class="copy-btn" data-url="${url}">Copy</button>
+          </td>`;
+        tableBody.appendChild(row);
+      }
+
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.onclick = async (e) => {
+          const u = e.currentTarget.dataset.url;
+          try { await navigator.clipboard.writeText(u); e.currentTarget.textContent = 'Copied'; setTimeout(()=> e.currentTarget.textContent='Copy', 1200); }
+          catch (err) { alert('Copy failed'); }
+        };
+      });
+    }
+
+    document.querySelectorAll('thead th').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.key;
+        if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+        applyFilters();
+      });
+    });
+
+    [searchInput, clientFilter, productFilter, sdlcFilter].forEach(el => el.addEventListener('input', applyFilters));
+
+    initFilters();
+    applyFilters();
+  </script>
+</body>
+</html>
